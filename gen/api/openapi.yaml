@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: OpenAPI спецификация Зоомагазина
+  version: 0.0.1
+servers:
+- description: My server
+  url: http://localhost:8080/api/v1/
+paths:
+  /Pats:
+    get:
+      description: Метод предназначен для получения списка всех питомцев, сохраненных
+        в БД.
+      operationId: getPats
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pats'
+          description: Список питомцев
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Любая неожиданная ошибка
+      summary: Метод получения питомца
+      tags:
+      - Pat
+      x-accepts: application/json
+    post:
+      description: Метод предназначен для сохранения в БД данных по новому питомцу.
+      operationId: createPat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pat'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pat'
+          description: Подтверждение успешного сохранения
+        "400":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: Некорректные входные данные. Возвращает список атрибутов с
+            ошибками
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Любая неожиданная ошибка
+      summary: Метод добавления нового питомца в каталог
+      tags:
+      - Pat
+      x-contentType: application/json
+      x-accepts: application/json
+  /pats/{id}:
+    delete:
+      operationId: deletePatById
+      parameters:
+      - description: Идентификатор питомца
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Успешное удаление
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Любая неожиданная ошибка
+      summary: Метод удаления игрушки по идентификатору
+      tags:
+      - Pat
+      x-accepts: application/json
+    get:
+      operationId: getPayById
+      parameters:
+      - description: Идентификатор питомца
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pat'
+          description: Питомец
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Любая неожиданная ошибка
+      summary: Метод получения питомца по идентификатору
+      tags:
+      - Pat
+      x-accepts: application/json
+    put:
+      description: Метод предназначен для обновления в БД данных по имеющейся питомце.
+      operationId: updatePat
+      parameters:
+      - description: Идентификатор питомца
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pat'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pat'
+          description: Подтверждение успешного обновления
+        "400":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: Некорректные входные данные. Возвращает список атрибутов с
+            ошибками
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Любая неожиданная ошибка
+      summary: Метод обновления питомца в каталоге
+      tags:
+      - Pat
+      x-contentType: application/json
+      x-accepts: application/json
+  /pats/status/{status}:
+    get:
+      operationId: getPatByStatus
+      parameters:
+      - description: Статус (состояние) питомца
+        explode: false
+        in: path
+        name: status
+        required: true
+        schema:
+          enum:
+          - продажа
+          - на реализации
+          - возврат
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pat'
+          description: Питомец
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Любая неожиданная ошибка
+      summary: Метод получения питомца по состоянию
+      tags:
+      - Pat
+      x-accepts: application/json
+components:
+  schemas:
+    Pat:
+      example:
+        note: Очень милый
+        name: Котенок
+        created_at: 2022-07-01T15:00:00+01
+        toy_id: 0000-1111-2222-3333
+        status: продажа
+      properties:
+        toy_id:
+          example: 0000-1111-2222-3333
+          type: string
+        name:
+          description: Название питомца
+          example: Котенок
+          type: string
+        status:
+          description: Статус (состояние) питомца
+          enum:
+          - продажа
+          - на реализации
+          - возврат
+          example: продажа
+          type: string
+        note:
+          description: Описание, пометки
+          example: Очень милый
+          type: string
+        created_at:
+          description: Дата и время сохранения питомца в базе
+          example: 2022-07-01T15:00:00+01
+          type: string
+      required:
+      - name
+      - status
+      type: object
+    Pats:
+      items:
+        $ref: '#/components/schemas/Pat'
+      type: array
+    Error:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+
