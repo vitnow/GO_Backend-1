@@ -16,6 +16,7 @@ func main() {
 	var Nik string // Запрос Ника у пользователя
 	fmt.Print("Введите Ваш ник: ")
 	fmt.Scanln(&Nik)
+	conn.Write([]byte(Nik))
 	defer conn.Close()
 	go func() {
 		io.Copy(os.Stdout, conn)
